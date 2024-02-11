@@ -44,7 +44,7 @@ function App() {
                 const match = section.NAME.match(/\[(.*?)\]/);
                 // Проверяем, соответствует ли содержимое скобок определенному условию
                 if (match && match[1] === '1') { // Укажите ваше условие
-                    return section;
+                    return {...section, NAME: section.NAME.replace(/\[.*?\]/g, '')};
                 }
                 return null; // Возвращаем null, если условие не выполнено
             }).filter((section): section is ISection => section !== null); // Удаляем null элементы, уточняя тип
@@ -52,7 +52,7 @@ function App() {
                 const match = section.NAME.match(/\[(.*?)\]/);
                 // Проверяем, соответствует ли содержимое скобок определенному условию
                 if (match && match[1] === '2') { // Укажите ваше условие
-                    return section;
+                    return {...section, NAME: section.NAME.replace(/\[.*?\]/g, '')};
                 }
                 return null; // Возвращаем null, если условие не выполнено
             }).filter((section): section is ISection => section !== null); // Удаляем null элементы, уточняя тип
@@ -60,7 +60,7 @@ function App() {
                 const match = section.NAME.match(/\[(.*?)\]/);
                 // Проверяем, соответствует ли содержимое скобок определенному условию
                 if (match && match[1] === '3') { // Укажите ваше условие
-                    return section;
+                    return {...section, NAME: section.NAME.replace(/\[.*?\]/g, '')};
                 }
                 return null; // Возвращаем null, если условие не выполнено
             }).filter((section): section is ISection => section !== null); // Удаляем null элементы, уточняя тип

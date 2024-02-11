@@ -1,11 +1,46 @@
-.root {
+.container {
+  height: 100px;
+  width: 100%;
+
 
 }
-
-.button {
+.dragAreaActive {
   display: flex;
-  height: 100px;
-  width: 100px;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  height: 100%;
+  border-radius: 10px;
+  border: 2px dashed #99969a;
+  margin-top: 10px;
+}
 
-  background-color: white !important;
+.uploads {
+  display: flex;
+  //justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.fileWrapper {
+  height: 98px;
+  max-height: 98px;
+  width: 100px;
+  display: flex;
+  font-size: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  background-color: #E9E7EB;
+  color: #99969a;
+  border-radius: 8px;
+  border: 1px solid #99969a;
+  margin: 3px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  p {
+    margin: 0;
+    max-width: 100%;
+    text-align: center;
+  }
 }

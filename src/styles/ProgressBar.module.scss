@@ -1,0 +1,14 @@
+.root {
+  width: 100px;
+  background-color: rgba(158, 5, 2, 0.24);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+  transition: all .15s ease;
+  .filler {
+    height: 10px;
+    border-radius: 4px; // Скругление только левой стороны для красивого отображения при малых значениях
+    transition: all .15s ease;
+
+  }
+}

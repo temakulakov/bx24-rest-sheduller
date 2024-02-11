@@ -3,26 +3,30 @@ import React from 'react';
 import styles from '../../styles/CalendarGrid.module.scss';
 import {useRecoilState, useRecoilValue} from "recoil";
 import {eventsAtom, sectionsAtom, sectionsGroupsAtom, selectedEventAtom} from "../../store/atoms";
-import dayjs from "dayjs";
+import dayjs, {Dayjs} from "dayjs";
 import {Position} from "../../types/App";
 import {EventType} from "@testing-library/react";
 import {IEvent, ISection} from "../../types/Api";
 import SlidePanel from "../SlideBar/SlideBar";
+import ProgressBar from "../../features/ProgressBar/ProgressBar";
 
 const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
     const sections = useRecoilValue(sectionsAtom);
     const sectionsGroups = useRecoilValue(sectionsGroupsAtom);
     const [events, setEvents] = useRecoilState(eventsAtom);
     const [isVisible, setIsVisible] = React.useState(false);
-    const [position, setPosition] = React.useState<Position>({ x: 0, y: 0 });
+    const [position, setPosition] = React.useState<Position>({x: 0, y: 0});
     const [currentEvent, setCurrentEvent] = React.useState<IEvent | null>(null);
 
     const [slidePanel, setSlidePanel] = React.useState<boolean>(false);
     const [selectedEvent, setSelectedEvent] = useRecoilState(selectedEventAtom);
     const [currentSection, setCurrentSection] = React.useState<ISection | null>(null);
 
+    const [formulas, setFormulas] = React.useState<{ [sectionId: string]: number }>({});
+
+
     const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>, event: IEvent) => {
-        setPosition({ x: e.clientX, y: e.clientY });
+        setPosition({x: e.clientX, y: e.clientY});
         setIsVisible(true);
         setCurrentEvent(event);
     };
@@ -33,8 +37,60 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
     };
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        setPosition({ x: e.clientX, y: e.clientY });
+        setPosition({x: e.clientX, y: e.clientY});
     };
+
+    // Функция для фильтрации событий по временному интервалу и подсчета их общей длительности
+    function filterEventsAndCalculateDuration(
+        events: IEvent[],
+        intervalStart: Dayjs,
+        intervalEnd: Dayjs
+    ): number {
+        // Фильтрация событий, которые пересекаются с заданным интервалом
+        const filteredEvents = events.filter(event => {
+            const eventStart = dayjs(event.DATE_FROM);
+            const eventEnd = dayjs(event.DATE_TO);
+            return eventStart.isBefore(intervalEnd) && eventEnd.isAfter(intervalStart);
+        });
+
+
+        // Подсчет общей длительности отфильтрованных событий в минутах
+        const totalDuration = filteredEvents.reduce((acc, event) => {
+            const eventStart = dayjs(event.DATE_FROM);
+            const eventEnd = dayjs(event.DATE_TO);
+
+            // Ограничение начала и конца события интервалом
+            const start = eventStart.isBefore(intervalStart) ? intervalStart : eventStart;
+            const end = eventEnd.isAfter(intervalEnd) ? intervalEnd : eventEnd;
+
+            // Добавление длительности события к аккумулятору
+            return acc + end.diff(start, 'minute');
+        }, 0);
+
+        return totalDuration;
+    }
+
+    React.useEffect(() => {
+        // Явно указываем тип для аккумулятора в reduce
+        const newFormulas: { [key: string]: number } = sections.reduce<{ [key: string]: number }>((acc, section) => {
+            const sectionEvents = events.filter(event => event.SECTION_ID === section.ID);
+            const startTime = dayjs().hour(9).minute(30);
+            const endTime = dayjs().hour(18).minute(30);
+            const totalMinutesInDay = endTime.diff(startTime, 'minute');
+            const totalDuration = sectionEvents.reduce((total, event) => {
+                const eventStart = dayjs(event.DATE_FROM);
+                const eventEnd = dayjs(event.DATE_TO);
+                const start = eventStart.isBefore(startTime) ? startTime : eventStart;
+                const end = eventEnd.isAfter(endTime) ? endTime : eventEnd;
+                return total + Math.max(0, end.diff(start, 'minute'));
+            }, 0);
+            acc[section.ID] = (totalDuration / totalMinutesInDay) * 100;
+            return acc;
+        }, {});
+        setFormulas(newFormulas);
+    }, [events, sections]);
+
+
 
     return (
         <div className={styles.gridContainer} ref={ref}>
@@ -42,17 +98,38 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                 {
                     sectionsGroups.map((group, index) => (
                         <React.Fragment key={index}>
-                            <div key={index}  className={styles.titleGroup}>{group.title}</div>
-                            {group.sections.map((section, index) => <div key={index} style={currentSection?.ID === section.ID ?
-                                {
-                                    boxShadow: "0 0 0 1px #E1DCE2",
-                                    backgroundColor: "#DBDADC",
-                                    height: "45px"
-                                }
-                                :
-                                {}} className={styles.stickyCell}>
-                                {section.NAME.replace(/\[.*?\]/g, '')}
-                            </div>)}
+                            <div key={index} className={styles.titleGroup}>{group.title}</div>
+                            {group.sections.map((section, index) => {
+
+                                const formulaValue = formulas[section.ID] || 0;
+
+                                return <div onMouseEnter={() => setCurrentSection(section)}
+                                            onMouseLeave={() => setCurrentSection(null)}
+                                            key={index}
+                                            style={currentSection?.ID === section.ID ?
+                                                {
+                                                    boxShadow: "0 0 0 1px #E1DCE2",
+                                                    backgroundColor: "#DBDADC",
+                                                    height: "45px"
+                                                }
+                                                :
+                                                {}} className={styles.stickyCell}>
+                                    <div style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        height: "100%",
+                                        justifyContent: "space-between",
+                                        padding: "2px 0 0 2px"
+
+                                    }}
+                                    >
+                                        <p>{section.NAME.replace(/\[.*?\]/g, '')}</p>
+                                        <ProgressBar value={formulas[section.ID]} color={section.COLOR}
+                                                     height={currentSection && currentSection.ID === section.ID ? 15 : 10}/>
+
+                                    </div>
+                                </div>
+                            })}
                         </React.Fragment>
 
                     ))
@@ -64,27 +141,37 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                             <div className={styles.titleRow}>
                             </div>
                             {group.sections.map((section, index) => {
-                                return <div key={index} onMouseEnter={() => setCurrentSection(section)} onMouseLeave={() => setCurrentSection(null)} className={styles.row} >
+                                return <div key={index} onMouseEnter={() => setCurrentSection(section)}
+                                            onMouseLeave={() => setCurrentSection(null)}
+                                            style={currentSection && currentSection.ID === section.ID ? {
+                                                height: "45px",
+                                                backgroundColor: "rgba(0, 0, 0, 0.1)"
+                                            } : {}} className={styles.row}>
                                     {events.map((calEvent, index) => {
                                         return calEvent.SECTION_ID === section.ID ? <div onMouseMove={handleMouseMove}
                                                                                          onClick={() => {
                                                                                              setSlidePanel(true);
                                                                                              setSelectedEvent(calEvent);
                                                                                          }}
-                                                                                      onMouseEnter={(e) => handleMouseEnter(e, calEvent)}
-                                                                                      onMouseLeave={handleMouseLeave}
+                                                                                         onMouseEnter={(e) => handleMouseEnter(e, calEvent)}
+                                                                                         onMouseLeave={handleMouseLeave}
 
-                                                                                      className={styles.eventWrapper}
-                                                                                      style= {currentEvent?.ID === calEvent.ID ? {width: `${dayjs(calEvent.DATE_TO).diff(dayjs(calEvent.DATE_FROM), 'minute') * 2.2916666667 - 8}px`,
-                                                                                                 left: `${dayjs(calEvent.DATE_FROM, "DD.MM.YYYY HH:mm:ss").diff(dayjs(calEvent.DATE_FROM, "DD.MM.YYYY HH:mm:ss").startOf('day'), 'minute') * 2.5}px`,
+                                                                                         className={styles.eventWrapper}
+                                                                                         style={currentEvent?.ID === calEvent.ID ? {
+                                                                                                 width: `${calEvent.DATE_TO.diff(calEvent.DATE_FROM, 'minute') * 2.5 - 8}px`,
+                                                                                                 left: `${calEvent.DATE_FROM.diff(calEvent.DATE_FROM.startOf('day'), 'minute') * 2.5 - 300}px`,
                                                                                                  background: `${section.COLOR}`,
                                                                                                  boxShadow: ` 0 0 0 1.5px rgb(255, 255, 255),
-                                                                                                         0 0 0 3px ${section.COLOR}`} : {width: `${dayjs(calEvent.DATE_TO).diff(dayjs(calEvent.DATE_FROM), 'minute') * 2.2916666667 - 8}px`,
-                                                                                                 left: `${dayjs(calEvent.DATE_FROM, "DD.MM.YYYY HH:mm:ss").diff(dayjs(calEvent.DATE_FROM, "DD.MM.YYYY HH:mm:ss").startOf('day'), 'minute') * 2.5}px`,
+                                                                                                         0 0 0 3px ${section.COLOR}`
+                                                                                             }
+                                                                                             :
+                                                                                             {
+                                                                                                 width: `${calEvent.DATE_TO.diff(calEvent.DATE_FROM, 'minute') * 2.5 - 8}px`,
+                                                                                                 left: `${calEvent.DATE_FROM.diff(calEvent.DATE_FROM.startOf('day'), 'minute') * 2.5 - 300}px`,
                                                                                                  background: `${section.COLOR}`,
-                                                                                                }
+                                                                                             }
                                                                                          }
-                                                                                      key={index}>{calEvent.NAME}</div> : null
+                                                                                         key={index}>{calEvent.NAME}</div> : null
                                     })}
                                 </div>
                             })}
@@ -118,7 +205,7 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                         background: `${sections.find(section => section.ID === currentEvent.SECTION_ID)?.COLOR}`
                     }}></div>
                     <div className={styles.headerPopup}>{currentEvent.NAME}</div>
-                    <div style={{display: "flex",  alignItems: "center"}}>
+                    <div style={{display: "flex", alignItems: "center"}}>
                         <div className={styles.timePopup}>
 
                             <p>{`${dayjs(currentEvent.DATE_FROM, 'DD.MM.YYYY hh:mm:ss').hour()}:${dayjs(currentEvent.DATE_FROM, 'DD.MM.YYYY hh:mm:ss').minute()}`}</p>
@@ -126,13 +213,17 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                             <p>{`${dayjs(currentEvent.DATE_TO, 'DD.MM.YYYY hh:mm:ss').hour()}:${dayjs(currentEvent.DATE_TO, 'DD.MM.YYYY hh:mm:ss').minute() === 0
                                 ? "00" : dayjs(currentEvent.DATE_TO, 'DD.MM.YYYY hh:mm:ss').minute()}`}</p>
                         </div>
-                        <div style={{marginLeft: "5px"}}><a style={{color: "#807186"}}>Филиал: </a>{
+                        <div style={{marginLeft: "5px"}}><a style={{color: "#807186"}}>Филиал:<br/> </a>{
                             sectionsGroups.map((group) => {
                                 const foundSection = group.sections.find((section) => section.ID === currentEvent?.SECTION_ID);
                                 return group ? group.title : null;
                             }).filter(name => name !== null)[0] // Извлекаем первое непустое имя и отображаем его
                         }</div>
-                        <div style={{marginLeft: "5px"}}><div/><a style={{color: "#807186"}}>Место: </a>{sections.find(section => section.ID === currentEvent.SECTION_ID)?.NAME.replace(/\[.*?\]/g, '')}</div>
+                        <div style={{marginLeft: "5px"}}>
+                            <div/>
+                            <a style={{color: "#807186"}}>Место:<br/>
+                            </a>{sections.find(section => section.ID === currentEvent.SECTION_ID)?.NAME.replace(/\[.*?\]/g, '')}
+                        </div>
                     </div>
                     {currentEvent["~DESCRIPTION"] === '' ? null : <div className={styles.descriptionPopup}>
                         <p>{`${currentEvent["~DESCRIPTION"]}`}</p>

@@ -1,3 +1,5 @@
+import {Dayjs} from "dayjs";
+
 export interface IUsers {
     ID: string;
     NAME: string;
@@ -43,8 +45,8 @@ export interface IEvent {
     EVENT_TYPE: any
     CREATED_BY: string
     NAME: string
-    DATE_FROM: string
-    DATE_TO: string
+    DATE_FROM: Dayjs,
+    DATE_TO: Dayjs,
     TZ_FROM: string
     TZ_TO: string
     ORIGINAL_DATE_FROM: any
@@ -87,7 +89,13 @@ export interface IEvent {
     "~DESCRIPTION": string
     "~USER_OFFSET_FROM": number
     "~USER_OFFSET_TO": number
-    uploads: any[]
+    uploads: IUpload[]
+}
+
+export interface IUpload {
+    ID: number;
+    NAME: string;
+    UPLOAD_URL: string;
 }
 
 export interface Meeting {
