@@ -1,8 +1,16 @@
 .root {
-
+  background: #EEF2F4;
+  display: flex;
+  height: 100vh;
 }
 
 .main {
+  background: #ffffff;
+  height: 95vh;
+  flex-grow: 1;
+  width: 100%;
+  border-radius: 13px;
+
 
 }
 
@@ -15,5 +23,9 @@
 }
 
 .side {
-
+  width: 320px;
+  background: white;
+  height: fit-content;
+  border-radius: 13px;
+  margin: 0 0 0 10px;
 }

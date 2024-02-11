@@ -1,0 +1,20 @@
+.root {
+  width: calc(100%);
+  overflow-x: scroll;
+  height: 100%;
+}
+
+.timeLine {
+  height: 30px;
+  //background: blanchedalmond;
+  display: flex;
+
+}
+
+.element {
+  min-width: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px #E1DCE2 solid;
+}

@@ -1,0 +1,142 @@
+.header {
+  display: flex;
+  align-items: center
+
+}
+.title {
+  background: transparent;
+  border: none;
+  display: block;
+  font-size: 20px;
+  line-height: 1.2;
+  min-height: 20px;
+  outline: none;
+  resize: none!important;
+  white-space: pre-wrap;
+  width: 100%;
+  word-break: break-word;
+  padding: 10px 20px ;
+}
+
+.round {
+  border-radius: 50%;
+  height: 30px;
+  min-width: 30px;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  h3 {
+    margin-right: 5px;
+    color: #807186;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  > svg {
+    margin-right: 5px;
+    fill: #807186;
+    width: 20px;
+    height: 20px;
+  }
+  div input {
+    border-color: rgba(255, 255, 255, 0);
+    border-radius: 10px;
+    transition: all .3s ease;
+
+    &:hover {
+      background-color: #E9E7EB;
+    }
+
+    &:active {
+      background-color: #E9E7EB;
+    }
+
+  }
+
+
+  fieldset {
+    border: none;
+    &:active {
+      background-color: rgba(183, 6, 6, 0);
+    }
+  }
+  label {
+    display: none;
+  }
+}
+
+.rowUsers {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: flex-start;
+  > div {
+    min-width: 300px;
+  }
+  h3 {
+    margin-right: 5px;
+    color: #807186;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  > svg {
+    margin-right: 5px;
+    margin-top: 13px;
+    fill: #807186;
+    width: 25px;
+    height: 25px;
+  }
+  div input {
+    border-color: rgba(255, 255, 255, 0);
+    border-radius: 10px;
+    transition: all .3s ease;
+
+    &:hover {
+      background-color: #E9E7EB;
+    }
+
+    &:active {
+      background-color: #E9E7EB;
+    }
+
+  }
+
+  input[type="text"] {
+    font-size: 14px;
+    padding: 20px 0 0 20px;
+    //border-radius: 30px;
+  }
+
+  fieldset {
+    border: none;
+    &:active {
+      background-color: rgba(183, 6, 6, 0);
+    }
+  }
+  label {
+    display: none;
+  }
+}
+
+.description {
+  min-height: 90px;
+  width: 100%;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 5px;
+  height: 100%;
+  transition: all .3s ease;
+  &.active {
+    border-color: rgba(255, 255, 255, 0) !important; // Цвет границы при активации
+  }
+}
+
+h3 {
+  margin-right: 5px;
+  color: #807186;
+  font-size: 16px;
+  font-weight: 500;
+}

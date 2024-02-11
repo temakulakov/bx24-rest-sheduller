@@ -1,0 +1,31 @@
+.resize-container {
+  position: absolute;
+  background-color: lightblue;
+  border: 1px solid blue;
+  cursor: move;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  overflow: hidden; // Предотвращает выход контента за пределы элемента
+
+  &:hover {
+    z-index: 2; // Повышаем, чтобы при наведении элемент был над другими
+  }
+}
+
+.resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: darkblue;
+  cursor: se-resize;
+  z-index: 3; // Гарантирует, что ручка будет поверх элемента
+
+  &:hover {
+    background-color: red; // Изменение цвета при наведении для лучшей видимости
+  }
+}

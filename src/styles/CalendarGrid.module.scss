@@ -1,0 +1,189 @@
+/* CalendarGrid.module.css */
+.gridContainer {
+  display: flex;
+  overflow: scroll;
+}
+
+.fixedColumn {
+  position: sticky;
+  left: 0;
+  background-color: white;
+  min-width: 300px;
+  z-index: 101;
+}
+
+.scrollableRows {
+  display: flex;
+  flex-direction: column;
+  background-size: 150px 100%;
+  background-image: linear-gradient(to right, #E1DCE2 1px, transparent 1px);
+  background-color: #F4F3F5;
+}
+
+.row {
+  display: flex;
+  height: 42px;
+  //background-color: #F4F3F5;
+  //border-bottom: 1px solid #ccc;
+  width: 3300px;
+  transition: all .2s ease;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 0 0 1px #E1DCE2;
+    background-color: rgba(0, 0, 0, 0.1);
+    height: 44px;
+  }
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  //border-bottom: 1px solid #ccc;
+  height: 42px;
+  min-width: 150px;
+  transition: all .2s ease;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 0 0 1px #E1DCE2;
+    background-color: rgba(0, 0, 0, 0.1)
+  }
+}
+
+.stickyLabel {
+  background-color: #FFF6F3;
+}
+
+.titleGroup {
+  height: 30px;
+  background-image: linear-gradient(to right, #E1DCE2 1px, transparent 1px);
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+
+
+
+}
+
+.titleRow {
+  background-size: 150px 100%;
+  background-image: linear-gradient(to right, #E1DCE2 1px, transparent 1px);
+  background-color: #ffffff;
+  height: 30px;
+}
+
+.stickyCell {
+  composes: cell;
+  position: sticky;
+  left: 0;
+  background-color: #F4F3F5;
+  //border-right: 1px #E1DCE2 solid;
+  z-index: 2;
+  border-radius:  5px 0 0 5px;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.eventWrapper {
+  display: flex;
+  min-width: 100px;
+  align-items: flex-start;
+  padding: 2px 4px;
+  justify-content: flex-start;
+  background-color: #8300ff;
+  border-radius: 5px;
+  font-size: 14px;
+  color: white;
+  height: 36px;
+  transition: all .3s ease;
+  cursor: pointer;
+  overflow: scroll;
+  position: relative;
+  left: 200px;
+  z-index: 100;
+  &:hover {
+    box-shadow: 0 0 0 1.5px rgb(255, 255, 255),
+    0 0 0 3px #8300ff;
+    height: 40px;
+  }
+}
+
+.popup {
+  position: fixed;
+  max-width: 500px;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px, rgba(17, 17, 26, 0.1) 0px 24px 80px;
+  padding: 10px 10px 15px 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  zIndex: 9999;
+}
+
+.popup {
+  // Остальные стили остаются без изменений
+  opacity: 0; /* Изначально popup невидим */
+  visibility: hidden; /* Избегаем взаимодействия с невидимым элементом */
+  //transition: all 0.9s ease, visibility 0.3s; /* Анимация для opacity и visibility */
+}
+
+.popupVisible {
+  opacity: 1; /* Делаем popup полностью видимым */
+  visibility: visible; /* Элемент становится "видимым" */
+}
+
+.linePopup {
+  width: 27px;
+  height: 4.5px;
+  border-radius: 15px;
+  margin-bottom: 5px;
+}
+
+.headerPopup {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.timePopup {
+  display: flex;
+  align-content: baseline;
+  background-color: #F4F3F5;
+  width: fit-content;
+  padding: 1px 1px;
+  border-radius: 6px;
+  margin: 5px 0 5px 0;
+  p {
+    color: #807186;
+    font-size: 13px;
+    height: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2px;
+  }
+  p:first-child {
+    &::after {
+      content: "-";
+      margin: 0 3.5px;
+    }
+  }
+}
+
+.descriptionPopup {
+  margin-top: 5px;
+  p {
+    color: #5f5e6b;
+    font-size: 14.5px;
+    max-height: 100px;
+    white-space: break-spaces;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &::before {
+      content: "";
+      margin-left: 2px;
+    }
+  }
+}

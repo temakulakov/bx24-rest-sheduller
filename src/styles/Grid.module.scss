@@ -1,3 +1,71 @@
-.root {
+$border-color: #ccc;
+$timeline-height: 20px;
+$cell-height: 90px;
+$cell-width: 100px;
+$left-column-width: 250px;
 
+.container {
+  display: flex;
+  overflow: hidden; // Скрыть прокрутку на уровне контейнера
+}
+
+.leftColumn {
+  min-width: $left-column-width;
+  border-right: 1px solid $border-color;
+  display: flex;
+  flex-direction: column;
+}
+
+.leftCell {
+  height: calc($cell-height - 1px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid $border-color;
+}
+
+.dayGrid {
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto; // Переместить прокрутку сюда
+}
+
+.timeline {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  height: $timeline-height;
+  background-color: white;
+  border-bottom: 1px solid $border-color;
+
+  .timeSlot {
+    min-width: $cell-width;
+    border-right: 1px solid $border-color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.gridRow {
+  display: flex;
+  min-width: calc(24 * #{$cell-width}px);
+  height: $cell-height;
+}
+
+.gridCell {
+  border-right: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+  flex-grow: 1;
+  min-width: $cell-width;
+}
+
+.gridRow .gridCell:last-child {
+  border-right: none;
 }

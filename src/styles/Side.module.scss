@@ -1,0 +1,13 @@
+.root {
+  div {
+    div {
+      div {
+        div {
+          &::first-letter {
+            text-transform: uppercase;
+          }
+        }
+      }
+    }
+  }
+}

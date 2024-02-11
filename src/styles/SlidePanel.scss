@@ -1,0 +1,19 @@
+.panel {
+  position: fixed;
+  top: 0;
+  right: -600px; /* Исходное положение: скрыто за пределами экрана */
+  width: 450px;
+  height: 100vh;
+  background-color: #ffffff;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  border-radius: 13px 0 0 13px;
+  transition: all 0.3s ease; /* Анимация для плавного появления и исчезновения */
+  z-index: 100; /* Убедитесь, что панель отображается поверх других элементов */
+  overflow-y: auto; /* Добавляем прокрутку, если содержимое выходит за пределы высоты экрана */
+
+  padding: 12px 24px;
+}
+
+.panel.open {
+  right: 0; /* Панель видна, когда она открыта */
+}
