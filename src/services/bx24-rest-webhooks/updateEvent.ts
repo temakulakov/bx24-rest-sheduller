@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 
 export const updateCalendarEvent = async (eventData: IEvent) => {
     const url = 'https://intranet.gctm.ru/rest/1552/c751t78u4kgzxy2i/calendar.event.update';
-    console.log(eventData);
     try {
         const response = await axios.post(url, {
             type: 'company_calendar',
@@ -19,7 +18,6 @@ export const updateCalendarEvent = async (eventData: IEvent) => {
             to: dayjs(eventData.DATE_TO).format('DD.MM.YYYY HH:mm'),
         });
 
-        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error('Error updating calendar event:', error);

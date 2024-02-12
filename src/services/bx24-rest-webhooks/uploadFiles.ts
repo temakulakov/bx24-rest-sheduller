@@ -28,7 +28,6 @@ async function uploadFiles(files: File[]): Promise<void> {
                 },
             });
 
-            console.log(`File ${file.name} uploaded successfully`);
         } catch (error) {
             console.error(`Error uploading file ${file.name}:`, error);
         }

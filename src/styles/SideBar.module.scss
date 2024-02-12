@@ -46,6 +46,7 @@
     color: #807186;
     font-size: 16px;
     font-weight: 500;
+    min-width: 92px;
   }
   > svg {
     margin-right: 5px;
@@ -93,6 +94,7 @@
     color: #807186;
     font-size: 16px;
     font-weight: 500;
+    min-width: 92px;
   }
   > svg {
     margin-right: 5px;
@@ -179,3 +181,60 @@ h3 {
   }
 }
 
+
+.column {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+
+  div div div div button:nth-child(1) {
+    position: relative;
+    right: 30px
+  }
+
+  div div div div button:nth-child(2) {
+    display: none;
+  }
+  div div div div button:nth-child(2) {
+    display: none;
+  }
+
+  h3 {
+    margin-right: 5px;
+    color: #807186;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  > svg {
+    margin-right: 5px;
+    fill: #807186;
+    width: 20px;
+    height: 20px;
+  }
+  div input {
+    border-color: rgba(255, 255, 255, 0);
+    border-radius: 10px;
+    transition: all .3s ease;
+    padding: 5px 5px;
+    &:hover {
+      background-color: #E9E7EB;
+    }
+
+    &:active {
+      background-color: #E9E7EB;
+    }
+
+  }
+
+
+  fieldset {
+    border: none;
+    &:active {
+      background-color: rgba(183, 6, 6, 0);
+    }
+  }
+  label {
+    display: none;
+  }
+}

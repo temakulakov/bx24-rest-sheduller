@@ -101,55 +101,58 @@
                             </div>
                             <div className={styles.row}>
                                 <h3>Филиал: </h3><AccountBalanceRoundedIcon/>
-                                <h3 style={{color: "#807185", fontWeight: "500"}}>{sectionsGroups.find((group) => group.sections.find((section) => section.ID === selectedEvent.SECT_ID)) ? sectionsGroups.find((group) => group.sections.find((section) => section.ID === selectedEvent.SECT_ID))?.title : null}</h3>
-                            {/*    <Autocomplete*/}
-                            {/*    id="country-select-demo"*/}
-                            {/*    sx={{width: 300}}*/}
-                            {/*    options={sectionsGroups}*/}
-                            {/*    autoHighlight*/}
-                            {/*    value={sectionsGroups.find((group) => group.sections.find((section) => section.ID === selectedEvent.SECT_ID))}*/}
-                            {/*    onChange={(event, newValue) => {*/}
-                            {/*        if (!newValue) {*/}
-                            {/*        } else {*/}
-                            {/*            setSelectedEvent(prevState => {*/}
-                            {/*                if (prevState === null) {*/}
-                            {/*                    return null;*/}
-                            {/*                }*/}
-                            {/*                return {*/}
-                            {/*                    ...prevState,*/}
-                            {/*                    SECTION_ID: String(newValue.id),*/}
-                            {/*                    SECT_ID: String(newValue.id)*/}
-                            {/*                };*/}
-                            {/*            });*/}
-                            {/*        }*/}
+                                <h3 style={{
+                                    color: "#807185",
+                                    fontWeight: "500"
+                                }}>{sectionsGroups.find((group) => group.sections.find((section) => section.ID === selectedEvent.SECT_ID)) ? sectionsGroups.find((group) => group.sections.find((section) => section.ID === selectedEvent.SECT_ID))?.title : null}</h3>
+                                {/*    <Autocomplete*/}
+                                {/*    id="country-select-demo"*/}
+                                {/*    sx={{width: 300}}*/}
+                                {/*    options={sectionsGroups}*/}
+                                {/*    autoHighlight*/}
+                                {/*    value={sectionsGroups.find((group) => group.sections.find((section) => section.ID === selectedEvent.SECT_ID))}*/}
+                                {/*    onChange={(event, newValue) => {*/}
+                                {/*        if (!newValue) {*/}
+                                {/*        } else {*/}
+                                {/*            setSelectedEvent(prevState => {*/}
+                                {/*                if (prevState === null) {*/}
+                                {/*                    return null;*/}
+                                {/*                }*/}
+                                {/*                return {*/}
+                                {/*                    ...prevState,*/}
+                                {/*                    SECTION_ID: String(newValue.id),*/}
+                                {/*                    SECT_ID: String(newValue.id)*/}
+                                {/*                };*/}
+                                {/*            });*/}
+                                {/*        }*/}
 
-                            {/*    }}*/}
-                            {/*    getOptionLabel={(option) => option.title}*/}
-                            {/*    renderOption={(props, option) => (*/}
-                            {/*        <Box component="li" sx={{'& > img': {mr: 2, flexShrink: 0}}} {...props}>*/}
-                            {/*            <div*/}
-                            {/*                style={{*/}
-                            {/*                    minWidth: "20px",*/}
-                            {/*                    minHeight: "20px",*/}
-                            {/*                    background: `${option.color}`,*/}
-                            {/*                    borderRadius: "50%",*/}
-                            {/*                    marginRight: "10px"*/}
-                            {/*                }}*/}
-                            {/*            />*/}
-                            {/*            {option.title}*/}
-                            {/*        </Box>*/}
-                            {/*    )}*/}
-                            {/*    renderInput={(params) => (*/}
-                            {/*        <TextField*/}
-                            {/*            {...params}*/}
-                            {/*            label="Выберите филиал"*/}
-                            {/*            inputProps={{*/}
-                            {/*                ...params.inputProps,*/}
-                            {/*                autoComplete: 'new-password', // disable autocomplete and autofill*/}
-                            {/*            }}*/}
-                            {/*        />*/}
-                            {/*    )}*/}
-                            {/*/>*/}
+                                {/*    }}*/}
+                                {/*    getOptionLabel={(option) => option.title}*/}
+                                {/*    renderOption={(props, option) => (*/}
+                                {/*        <Box component="li" sx={{'& > img': {mr: 2, flexShrink: 0}}} {...props}>*/}
+                                {/*            <div*/}
+                                {/*                style={{*/}
+                                {/*                    minWidth: "20px",*/}
+                                {/*                    minHeight: "20px",*/}
+                                {/*                    background: `${option.color}`,*/}
+                                {/*                    borderRadius: "50%",*/}
+                                {/*                    marginRight: "10px"*/}
+                                {/*                }}*/}
+                                {/*            />*/}
+                                {/*            {option.title}*/}
+                                {/*        </Box>*/}
+                                {/*    )}*/}
+                                {/*    renderInput={(params) => (*/}
+                                {/*        <TextField*/}
+                                {/*            {...params}*/}
+                                {/*            label="Выберите филиал"*/}
+                                {/*            inputProps={{*/}
+                                {/*                ...params.inputProps,*/}
+                                {/*                autoComplete: 'new-password', // disable autocomplete and autofill*/}
+                                {/*            }}*/}
+                                {/*        />*/}
+                                {/*    )}*/}
+                                {/*/>*/}
 
 
                             </div>
@@ -203,6 +206,44 @@
                                     />
                                 )}
                             />
+                            </div>
+
+
+                            <div className={styles.row}><h3>Начало: </h3><AccessTimeFilledRoundedIcon/>
+                                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ru"}>
+                                    <DateTimePicker
+                                        ampm={false}
+                                        value={selectedEvent?.DATE_FROM} // Убедитесь, что selectedEvent?.DATE_FROM корректно обрабатывается
+                                        onChange={(newValue) => {
+                                            setSelectedEvent((prev) => {
+                                                if (!prev || !newValue) return prev; // Возвращаем prev, если оно равно null или newValue равно null
+
+                                                return {...prev, DATE_FROM: newValue};
+                                            });
+                                        }}
+                                        format="DD.MM.YYYY HH:mm"
+                                    />
+                                </LocalizationProvider>
+                            </div>
+                            <div className={styles.row}>
+                                <h3>Окончание: </h3><AccessTimeFilledRoundedIcon/>
+                                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ru"}>
+                                    <DateTimePicker
+                                        ampm={false}
+                                        value={selectedEvent.DATE_TO}
+                                        onChange={(newValue, context) => {
+                                            setSelectedEvent((prev) => {
+                                                if (!prev) return prev;
+                                                if (newValue) {
+                                                    return {...prev, DATE_TO: newValue};
+                                                }
+                                                return prev;
+                                            });
+                                        }}
+
+                                        format="DD.MM.YYYY HH:mm"
+                                    />
+                                </LocalizationProvider>
                             </div>
                             <div className={styles.rowUsers}>
                                 <h3>Участники:</h3><Groups2RoundedIcon/>
@@ -286,43 +327,6 @@
                                 />
                             </div>
 
-
-                            <div className={styles.row}><h3>Начало: </h3><AccessTimeFilledRoundedIcon/>
-                                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ru"}>
-                                    <DateTimePicker
-                                        ampm={false}
-                                        value={selectedEvent?.DATE_FROM} // Убедитесь, что selectedEvent?.DATE_FROM корректно обрабатывается
-                                        onChange={(newValue) => {
-                                            setSelectedEvent((prev) => {
-                                                if (!prev || !newValue) return prev; // Возвращаем prev, если оно равно null или newValue равно null
-
-                                                return {...prev, DATE_FROM: newValue};
-                                            });
-                                        }}
-                                        format="DD.MM.YYYY HH:mm"
-                                    />
-                                </LocalizationProvider>
-                            </div>
-                            <div className={styles.row}>
-                                <h3>Окончание: </h3><AccessTimeFilledRoundedIcon/>
-                                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ru"}>
-                                    <DateTimePicker
-                                        ampm={false}
-                                        value={selectedEvent.DATE_TO}
-                                        onChange={(newValue, context) => {
-                                            setSelectedEvent((prev) => {
-                                                if (!prev) return prev;
-                                                if (newValue) {
-                                                    return {...prev, DATE_TO: newValue};
-                                                }
-                                                return prev;
-                                            });
-                                        }}
-
-                                        format="DD.MM.YYYY HH:mm"
-                                    />
-                                </LocalizationProvider>
-                            </div>
                             <h3>
                                 Описание:
                                 <textarea
@@ -356,7 +360,7 @@
                             {
                                 !newEvent && <>
                                     <h3>Прикрепленные документы: </h3>
-                                    <FileUploader />
+                                    <FileUploader/>
                                 </>
                             }
 

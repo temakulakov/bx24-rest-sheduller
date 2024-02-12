@@ -37,8 +37,6 @@ const Main = () => {
             timeLineContainerRef.current.scrollLeft = scrollPositionX;
             gridContainerRef.current.scrollLeft = scrollPositionX;
         }
-        // console.log("scrollPositionX");
-        // console.log(scrollPositionX);
     }, [scrollPositionX]);
 
 

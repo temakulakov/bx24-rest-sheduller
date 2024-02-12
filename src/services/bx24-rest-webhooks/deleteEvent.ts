@@ -11,7 +11,6 @@ export const deleteCalendarEvent = async (eventData: IEvent) => {
             ownerId: " ",
         });
 
-        console.log(response.data);
         return response.data;
     } catch (error) {
         console.error('Error updating calendar event:', error);

@@ -24,8 +24,43 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
     const [selectedEvent, setSelectedEvent] = useRecoilState(selectedEventAtom);
     const [currentSection, setCurrentSection] = React.useState<ISection | null>(null);
 
-    const [formulas, setFormulas] = React.useState<{ [sectionId: string]: number }>({});
     const [newEvent, setNewEvent] = React.useState<boolean>(false);
+    const [formulas, setFormulas] = React.useState<{ ID:string, NUMBER?: number }[]>([]);
+
+
+    const calculateFormulaForSection = (SECT_ID: string, events: IEvent[], intervalStart: Dayjs = date.hour(9).minute(30),
+                                        intervalEnd: Dayjs = date.hour(18).minute(30)) => {
+        const filteredEvents = events.filter(event => {
+            const eventStart = dayjs(event.DATE_FROM);
+            const eventEnd = dayjs(event.DATE_TO);
+            return eventStart.isBefore(intervalEnd) && eventEnd.isAfter(intervalStart) && event.SECTION_ID === SECT_ID;
+        });
+
+        // Подсчет общей длительности отфильтрованных событий в минутах
+        const totalDuration = filteredEvents.reduce((acc, event) => {
+            const eventStart = dayjs(event.DATE_FROM);
+            const eventEnd = dayjs(event.DATE_TO);
+
+            // Ограничение начала и конца события интервалом
+            const start = eventStart.isBefore(intervalStart) ? intervalStart : eventStart;
+            const end = eventEnd.isAfter(intervalEnd) ? intervalEnd : eventEnd;
+
+            // Добавление длительности события к аккумулятору
+            return acc + end.diff(start, 'minute');
+        }, 0);
+        console.log(`${sections.find(sect => sect.ID === SECT_ID)?.NAME} = ${totalDuration}`)
+        return totalDuration;
+    }
+
+    React.useEffect(() => {
+        const newFormulas = sections.map(section => ({
+            ID: section.ID,
+            NUMBER: calculateFormulaForSection(section.ID, events) // Это пример функции, которую вам нужно определить
+        }));
+        setFormulas(newFormulas);
+    }, [events]);
+
+
 
     const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>, event: IEvent) => {
         setPosition({x: e.clientX, y: e.clientY});
@@ -52,34 +87,7 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
     }, [slidePanel]);
 
     // Функция для фильтрации событий по временному интервалу и подсчета их общей длительности
-    function filterEventsAndCalculateDuration(
-        events: IEvent[],
-        intervalStart: Dayjs,
-        intervalEnd: Dayjs
-    ): number {
-        // Фильтрация событий, которые пересекаются с заданным интервалом
-        const filteredEvents = events.filter(event => {
-            const eventStart = dayjs(event.DATE_FROM);
-            const eventEnd = dayjs(event.DATE_TO);
-            return eventStart.isBefore(intervalEnd) && eventEnd.isAfter(intervalStart);
-        });
 
-
-        // Подсчет общей длительности отфильтрованных событий в минутах
-        const totalDuration = filteredEvents.reduce((acc, event) => {
-            const eventStart = dayjs(event.DATE_FROM);
-            const eventEnd = dayjs(event.DATE_TO);
-
-            // Ограничение начала и конца события интервалом
-            const start = eventStart.isBefore(intervalStart) ? intervalStart : eventStart;
-            const end = eventEnd.isAfter(intervalEnd) ? intervalEnd : eventEnd;
-
-            // Добавление длительности события к аккумулятору
-            return acc + end.diff(start, 'minute');
-        }, 0);
-
-        return totalDuration;
-    }
 
     React.useEffect(()=>{
         if (!slidePanel) {
@@ -87,25 +95,7 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
         }
     },[slidePanel]);
 
-    React.useEffect(() => {
-        // Явно указываем тип для аккумулятора в reduce
-        const newFormulas: { [key: string]: number } = sections.reduce<{ [key: string]: number }>((acc, section) => {
-            const sectionEvents = events.filter(event => event.SECTION_ID === section.ID);
-            const startTime = dayjs().hour(9).minute(30);
-            const endTime = dayjs().hour(18).minute(30);
-            const totalMinutesInDay = endTime.diff(startTime, 'minute');
-            const totalDuration = sectionEvents.reduce((total, event) => {
-                const eventStart = dayjs(event.DATE_FROM);
-                const eventEnd = dayjs(event.DATE_TO);
-                const start = eventStart.isBefore(startTime) ? startTime : eventStart;
-                const end = eventEnd.isAfter(endTime) ? endTime : eventEnd;
-                return total + Math.max(0, end.diff(start, 'minute'));
-            }, 0);
-            acc[section.ID] = (totalDuration / totalMinutesInDay) * 100;
-            return acc;
-        }, {});
-        setFormulas(newFormulas);
-    }, [events, sections]);
+
 
 
 
@@ -119,9 +109,6 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                                  className={styles.titleGroup}
                             >{group.title}</div>
                             {group.sections.map((section, index) => {
-
-
-                                const formulaValue = formulas[section.ID] || 0;
 
                                 return <div onMouseEnter={() => setCurrentSection(section)}
                                             onMouseLeave={() => setCurrentSection(null)}
@@ -139,14 +126,23 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                                         flexDirection: "column",
                                         height: "100%",
                                         justifyContent: "space-between",
-                                        padding: "2px 0 0 2px"
+                                        padding: "2px 0 0 2px",
+                                        flexWrap: "wrap"
 
                                     }}
                                     >
                                         <p>{section.NAME.replace(/\[.*?\]/g, '')}</p>
-                                        <ProgressBar value={formulas[section.ID]} color={section.COLOR}
-                                                     height={currentSection && currentSection.ID === section.ID ? 15 : 10}/>
-
+                                        <ProgressBar
+                                            value={formulas ? (formulas.find(formula => formula.ID === section.ID)?.NUMBER || 0) / 5.4
+                                                : 0} color={section.COLOR}
+                                            height={currentSection && currentSection.ID === section.ID ? 15 : 10}/>
+                                        <p style={{fontSize: "14px"}}>{formulas ? Math.floor((formulas.find(formula => formula.ID === section.ID)?.NUMBER || 0) / 5.4)
+                                            : 0}%</p>
+                                    </div>
+                                    <div className={styles.secondColumn}>
+                                        <p>Всего: 540 мин</p>
+                                        <p>Занято: {formulas ? Math.floor((formulas.find(formula => formula.ID === section.ID)?.NUMBER || 0))
+                                            : 0} мин</p>
                                     </div>
                                 </div>
                             })}
@@ -157,7 +153,7 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
             </div>
             <div className={styles.scrollableRows}>
                 {sectionsGroups.map((group, index) => {
-                        return <React.Fragment key={index}>
+                    return <React.Fragment key={index}>
                             <div className={styles.titleRow}>
                             </div>
                             {group.sections.map((section, index) => {

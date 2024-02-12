@@ -75,7 +75,6 @@ function App() {
         }
     }, [sections]);
 
-    console.log(users)
 
     return (
         <div className={styles.root}>
