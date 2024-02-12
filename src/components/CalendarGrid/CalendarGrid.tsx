@@ -26,7 +26,9 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
 
     const [newEvent, setNewEvent] = React.useState<boolean>(false);
     const [formulas, setFormulas] = React.useState<{ ID:string, NUMBER?: number }[]>([]);
+    const [isVisibleSection, setIsVisibleSection]  = React.useState<boolean>(false);
 
+    const [isVisibleFixed, setIsVisibleFixed] = React.useState<boolean>(false);
 
     const calculateFormulaForSection = (SECT_ID: string, events: IEvent[], intervalStart: Dayjs = date.hour(9).minute(30),
                                         intervalEnd: Dayjs = date.hour(18).minute(30)) => {
@@ -68,9 +70,30 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
         setCurrentEvent(event);
     };
 
+    const handleMouseEnter1 = (e: React.MouseEvent<HTMLDivElement>, section: ISection) => {
+        setPosition({x: e.clientX, y: e.clientY});
+        setIsVisibleSection(true);
+        setCurrentSection(section);
+    }
+
+    const handleMouseEnter2 = (e: React.MouseEvent<HTMLDivElement>, section: ISection) => {
+        setPosition({x: e.clientX, y: e.clientY});
+        setIsVisibleFixed(true);
+        setCurrentSection(section);
+    }
+
     const handleMouseLeave = () => {
         setIsVisible(false);
         setCurrentEvent(null);
+    };
+    const handleMouseLeave1 = () => {
+        setIsVisibleSection(false);
+        setCurrentSection(null);
+    };
+
+    const handleMouseLeave2 = () => {
+        setIsVisibleFixed(false);
+        setCurrentSection(null);
     };
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -110,8 +133,9 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                             >{group.title}</div>
                             {group.sections.map((section, index) => {
 
-                                return <div onMouseEnter={() => setCurrentSection(section)}
-                                            onMouseLeave={() => setCurrentSection(null)}
+                                return <div  onMouseMove={handleMouseMove}
+                                             onMouseEnter={(e) => handleMouseEnter2(e, section)}
+                                             onMouseLeave={handleMouseLeave2}
                                             key={index}
                                             style={currentSection?.ID === section.ID ?
                                                 {
@@ -158,8 +182,9 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                             </div>
                             {group.sections.map((section, index) => {
                                 return <div key={index}
-                                            onMouseEnter={() => setCurrentSection(section)}
-                                            onMouseLeave={() => setCurrentSection(null)}
+                                            onMouseMove={handleMouseMove}
+                                            onMouseEnter={(e) => handleMouseEnter1(e, section)}
+                                            onMouseLeave={handleMouseLeave1}
                                             onClick={() => {
                                                 setSlidePanel(true);
                                                 setSelectedEvent({...events[0],
@@ -187,7 +212,6 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                                                                                              setNewEvent(false);
                                                                                              setSlidePanel(true);
                                                                                              setSelectedEvent(calEvent);
-
                                                                                          }}
                                                                                          onMouseEnter={(e) => handleMouseEnter(e, calEvent)}
                                                                                          onMouseLeave={handleMouseLeave}
@@ -215,15 +239,27 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                     }
                 )}
             </div>
-            {currentSection && !currentEvent && isVisible && (
+            {
+                currentSection && isVisibleFixed && (<div
+                    className={`${styles.popup} ${isVisibleSection ? styles.popupVisible : ''}`}
+                    style={{
+                    top: position.y + 10,
+                    left: position.x,
+                    zIndex: '9999',
+                    padding: "10px 15px"
+                }}
+                    ><p style={{margin: "0"}}>Создать новое событие</p></div>)
+            }
+            {currentSection && !currentEvent && isVisibleSection && (
                 <div
-                    className={`${styles.popup} ${isVisible ? styles.popupVisible : ''}`}
+                    className={`${styles.popup} ${isVisibleSection ? styles.popupVisible : ''}`}
                     style={{
                         top: position.y + 10,
                         left: position.x,
-                        zIndex: '9999'
+                        zIndex: '9999',
+                        padding: "10px 15px"
                     }}
-                ><h1>wefwef</h1></div>
+                ><p style={{margin: "0"}}>Создать новое событие</p></div>
             )}
             {currentEvent && (
                 <div
