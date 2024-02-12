@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import {atom} from "recoil";
 import {IEvent, ISection, IUsers} from "../types/Api";
-import {ISectionsGroup} from "../types/App";
+import {IModal, ISectionsGroup} from "../types/App";
 
 export const dateAtom = atom<dayjs.Dayjs>({
     key: 'date',
@@ -35,4 +35,13 @@ export const sectionsGroupsAtom = atom<ISectionsGroup[]>({
 export const selectedEventAtom = atom<IEvent | null>({
     key: 'selectedEvent',
     default: null
+});
+
+export const modaAtom = atom<IModal>({
+    key: 'modal',
+    default: {
+        status: false,
+        from: dayjs(),
+        to: dayjs()
+    }
 });

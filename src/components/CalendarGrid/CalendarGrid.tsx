@@ -171,7 +171,6 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                                 </div>
                             })}
                         </React.Fragment>
-
                     ))
                 }
             </div>

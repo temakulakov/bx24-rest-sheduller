@@ -10,6 +10,7 @@ import FileUploader from "./features/FileUploader/FileUploader";
 import Main from "./components/Main/Main";
 import {getSections} from "./services/bx24-rest-webhooks/fetchSections";
 import {ISection} from "./types/Api";
+import Modal from "./components/Modal/Modal";
 
 function App() {
     const [users, setUsers] = useRecoilState(usersAtom);
@@ -84,6 +85,7 @@ function App() {
             <div className={styles.side}>
                 <Side/>
             </div>
+            <Modal/>
         </div>
     );
 }

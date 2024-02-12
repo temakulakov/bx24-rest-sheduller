@@ -60,7 +60,7 @@ const FileUploader: React.FC = () => {
                 'https://intranet.gctm.ru/rest/1552/c751t78u4kgzxy2i/calendar.event.getbyid',
                 { id: selectedEvent?.ID }
             );
-            setSelectedEvent({ ...response.data.result, DATE_FROM: dayjs(response.data.result.DATE_FROM), DATE_TO: dayjs(response.data.result.DATE_TO) }); // Обновляем selectedEvent новыми данными
+            setSelectedEvent({ ...response.data.result, DATE_FROM: dayjs(response.data.result.DATE_FROM, "DD.MM.YYYY HH:mm:ss"), DATE_TO: dayjs(response.data.result.DATE_TO, "DD.MM.YYYY HH:mm:ss") }); // Обновляем selectedEvent новыми данными
         } catch (error) {
             console.error('Ошибка при обновлении события:', error);
         }
@@ -80,7 +80,12 @@ const FileUploader: React.FC = () => {
             <div className={styles.uploads}>
                 {selectedEvent?.uploads.map((upload, index) => (
 
-                    <a key={index} className={styles.fileWrapper} href={`https://intranet.gctm.ru${upload.UPLOAD_URL}`}>
+                    <a key={index} className={styles.fileWrapper}
+                       // href={`https://intranet.gctm.ru${upload.UPLOAD_URL}`}
+                       // href={`https://intranet.gctm.ru/bitrix/tools/disk/focus.php?objectId=${upload.ID}&cmd=show&action=showObjectInGrid&ncc=1`}
+                       href={`https://intranet.gctm.ru/bitrix/tools/disk/focus.php?objectId=${upload.ID}&cmd=show&action=showObjectInGrid&ncc=1`}
+                       target="_blank"
+                    >
                         <ClearRoundedIcon className={styles.deleteIcon} onClick={() => deleteFile(String(upload.ID))} />
                             <AttachFileRoundedIcon style={{ transform: "rotate(40deg)", minHeight: "30px" }}/>
                             <p>{upload.NAME.replace(/\[.*?\]/g, '')}</p>

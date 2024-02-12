@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "../../../styles/Header.module.scss";
 import {useRecoilState} from "recoil";
-import {dateAtom} from "../../../store/atoms";
+import {dateAtom, modaAtom} from "../../../store/atoms";
 import {Month, WeekDay} from "../../../store/consts";
 import dayjs from "dayjs";
 import {Button, ButtonGroup} from "@mui/material";
@@ -32,6 +32,8 @@ const Header = () => {
         <Button key="three" onClick={() => actionDate("next")}><KeyboardArrowLeftRoundedIcon style={{rotate: '180deg'}}/></Button>,
     ];
 
+    const [modal, setModal] = useRecoilState(modaAtom);
+
     return <>
         <div className={styles.root}>
             <h3>{date.date()} {Month[date.month()]} {date.year()} {WeekDay[date.day()]}</h3>
@@ -41,6 +43,7 @@ const Header = () => {
                     variant="outlined"
                     endIcon={<AssessmentOutlinedIcon/>}
                     className={styles.report}
+                    onClick={() => setModal(prev => ({...prev, status: !prev.status}))}
                 >{"Отчет"}</Button>
                 <ButtonGroup
                     color="secondary"

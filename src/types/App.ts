@@ -1,4 +1,5 @@
 import {ISection} from "./Api";
+import {Dayjs} from "dayjs";
 
 export interface Position {
     x: number;
@@ -11,3 +12,9 @@ export interface ISectionsGroup {
   color: string;
   sections: ISection[];
 };
+
+export interface IModal {
+    status: boolean;
+    from: Dayjs;
+    to: Dayjs;
+}
