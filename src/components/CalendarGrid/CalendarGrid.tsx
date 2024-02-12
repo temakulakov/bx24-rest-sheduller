@@ -165,8 +165,8 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                                     <div className={styles.secondColumn}>
                                         <p style={{fontSize: "14px"}}>{formulas ? Math.floor((formulas.find(formula => formula.ID === section.ID)?.NUMBER || 0) / 5.4)
                                             : 0}%</p>
-                                        <p>Занято: {formulas ? Math.floor((formulas.find(formula => formula.ID === section.ID)?.NUMBER || 0))
-                                            : 0} мин</p>
+                                        <p>{`Занято: ${formulas ? Math.floor((formulas.find(formula => formula.ID === section.ID)?.NUMBER || 0) / 60) : 0} ч
+                                            ${formulas ? Math.floor((formulas.find(formula => formula.ID === section.ID)?.NUMBER || 0) % 60) : 0} мин`}</p>
                                     </div>
                                 </div>
                             })}
