@@ -202,7 +202,7 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                                             }}
                                             style={currentSection && currentSection.ID === section.ID ? {
                                                 height: "45px",
-                                                backgroundColor: "rgba(0, 0, 0, 0.1)"
+                                                backgroundColor: "rgba(0, 0, 0, 0.1)",
                                             } : {}} className={styles.row}>
                                     {events.map((calEvent, index) => {
                                         return calEvent.SECTION_ID === section.ID ? <div onMouseMove={handleMouseMove}

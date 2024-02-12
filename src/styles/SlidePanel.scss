@@ -3,7 +3,7 @@
   top: 0;
   right: -600px; /* Исходное положение: скрыто за пределами экрана */
   width: 450px;
-  height: 98vh;
+  height: 99vh;
   background-color: #ffffff;
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
   border-radius: 13px 0 0 13px;
@@ -11,7 +11,7 @@
   z-index: 1100; /* Убедитесь, что панель отображается поверх других элементов */
   overflow-y: auto; /* Добавляем прокрутку, если содержимое выходит за пределы высоты экрана */
 
-  padding: 12px 24px;
+  padding: 12px 24px 0 17px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

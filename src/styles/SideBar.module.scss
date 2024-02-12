@@ -158,8 +158,17 @@ h3 {
 .footer {
 
   display: flex;
-
+  bottom: 0px;
+  border-radius: 13px;
+  position: fixed;
+  height: 60px;
+  width: 100%;
+  background: linear-gradient(to top, rgb(255, 255, 255) 70%, rgba(255, 255, 255, 0) 100%);
+  //background: white;
+  padding: 10px 10px 10px 0;
+  align-items: flex-end;
   button {
+    height: 40px;
     border-radius: 8px;
     transition: all .3s ease;
   }
