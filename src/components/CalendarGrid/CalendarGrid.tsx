@@ -1,18 +1,20 @@
 // CalendarGrid.tsx
-import React from 'react';
+import React, {useEffect} from 'react';
 import styles from '../../styles/CalendarGrid.module.scss';
 import {useRecoilState, useRecoilValue} from "recoil";
-import {eventsAtom, sectionsAtom, sectionsGroupsAtom, selectedEventAtom} from "../../store/atoms";
+import {dateAtom, eventsAtom, sectionsAtom, sectionsGroupsAtom, selectedEventAtom} from "../../store/atoms";
 import dayjs, {Dayjs} from "dayjs";
 import {Position} from "../../types/App";
 import {EventType} from "@testing-library/react";
 import {IEvent, ISection} from "../../types/Api";
 import SlidePanel from "../SlideBar/SlideBar";
 import ProgressBar from "../../features/ProgressBar/ProgressBar";
+import {getEvents} from "../../services/bx24-rest-webhooks/fetchEvents";
 
 const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
     const sections = useRecoilValue(sectionsAtom);
     const sectionsGroups = useRecoilValue(sectionsGroupsAtom);
+    const date = useRecoilValue(dateAtom);
     const [events, setEvents] = useRecoilState(eventsAtom);
     const [isVisible, setIsVisible] = React.useState(false);
     const [position, setPosition] = React.useState<Position>({x: 0, y: 0});
@@ -23,7 +25,7 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
     const [currentSection, setCurrentSection] = React.useState<ISection | null>(null);
 
     const [formulas, setFormulas] = React.useState<{ [sectionId: string]: number }>({});
-
+    const [newEvent, setNewEvent] = React.useState<boolean>(false);
 
     const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>, event: IEvent) => {
         setPosition({x: e.clientX, y: e.clientY});
@@ -39,6 +41,15 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         setPosition({x: e.clientX, y: e.clientY});
     };
+
+    useEffect(() => {
+        if (!slidePanel) {
+            getEvents(date).then((events) => {
+                setEvents(events);
+            });
+        }
+
+    }, [slidePanel]);
 
     // Функция для фильтрации событий по временному интервалу и подсчета их общей длительности
     function filterEventsAndCalculateDuration(
@@ -70,6 +81,12 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
         return totalDuration;
     }
 
+    React.useEffect(()=>{
+        if (!slidePanel) {
+            setNewEvent(false);
+        }
+    },[slidePanel]);
+
     React.useEffect(() => {
         // Явно указываем тип для аккумулятора в reduce
         const newFormulas: { [key: string]: number } = sections.reduce<{ [key: string]: number }>((acc, section) => {
@@ -98,8 +115,11 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                 {
                     sectionsGroups.map((group, index) => (
                         <React.Fragment key={index}>
-                            <div key={index} className={styles.titleGroup}>{group.title}</div>
+                            <div key={index}
+                                 className={styles.titleGroup}
+                            >{group.title}</div>
                             {group.sections.map((section, index) => {
+
 
                                 const formulaValue = formulas[section.ID] || 0;
 
@@ -141,17 +161,37 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                             <div className={styles.titleRow}>
                             </div>
                             {group.sections.map((section, index) => {
-                                return <div key={index} onMouseEnter={() => setCurrentSection(section)}
+                                return <div key={index}
+                                            onMouseEnter={() => setCurrentSection(section)}
                                             onMouseLeave={() => setCurrentSection(null)}
+                                            onClick={() => {
+                                                setSlidePanel(true);
+                                                setSelectedEvent({...events[0],
+                                                    ID: "6666",
+                                                    NAME: "Новое событие",
+                                                    SECTION_ID: section.ID,
+                                                    SECT_ID: section.ID,
+                                                    ATTENDEE_LIST: [],
+                                                    DATE_FROM: date.hour(12),
+                                                    DATE_TO: date.hour(13),
+                                                    DESCRIPTION: '',
+                                                    ['~DESCRIPTION']: '',
+                                                    uploads: []
+                                                });
+                                                setNewEvent(true);
+                                            }}
                                             style={currentSection && currentSection.ID === section.ID ? {
                                                 height: "45px",
                                                 backgroundColor: "rgba(0, 0, 0, 0.1)"
                                             } : {}} className={styles.row}>
                                     {events.map((calEvent, index) => {
                                         return calEvent.SECTION_ID === section.ID ? <div onMouseMove={handleMouseMove}
-                                                                                         onClick={() => {
+                                                                                         onClick={(e) => {
+                                                                                             e.stopPropagation();
+                                                                                             setNewEvent(false);
                                                                                              setSlidePanel(true);
                                                                                              setSelectedEvent(calEvent);
+
                                                                                          }}
                                                                                          onMouseEnter={(e) => handleMouseEnter(e, calEvent)}
                                                                                          onMouseLeave={handleMouseLeave}
@@ -231,7 +271,7 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
 
                 </div>
             )}
-            <SlidePanel isOpen={slidePanel} setIsOpen={setSlidePanel}/>
+            <SlidePanel isOpen={slidePanel} setIsOpen={setSlidePanel} newEvent={newEvent} />
         </div>
     );
 });

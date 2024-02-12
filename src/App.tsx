@@ -38,6 +38,8 @@ function App() {
         });
     }, [date]);
 
+
+
     React.useEffect(() => {
         if (sections) {
             const filteredSections1 = sections.map((section) => {

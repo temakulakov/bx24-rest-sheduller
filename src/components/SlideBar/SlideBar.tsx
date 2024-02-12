@@ -21,14 +21,15 @@
     import {updateCalendarEvent} from "../../services/bx24-rest-webhooks/updateEvent";
     import {deleteCalendarEvent} from "../../services/bx24-rest-webhooks/deleteEvent";
     import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
+    import {addCalendarEvent} from "../../services/bx24-rest-webhooks/addEvent";
 
     interface SlidePanelProps {
         isOpen: boolean;
         setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-
+        newEvent: boolean;
     }
 
-    const SlidePanel: React.FC<SlidePanelProps> = ({ isOpen, setIsOpen }) => {
+    const SlidePanel: React.FC<SlidePanelProps> = ({ isOpen, setIsOpen , newEvent}) => {
         const panelRef = useRef<HTMLDivElement>(null);
         const [events, setEvents] = useRecoilState(eventsAtom);
         const sectionsGroups = useRecoilValue(sectionsGroupsAtom);
@@ -55,9 +56,6 @@
         }
 
 
-        useEffect(() => {
-            console.log(selectedEvent);
-        }, [selectedEvent]);
 
         // Обработчик для клавиши Esc
         useEffect(() => {
@@ -74,6 +72,7 @@
             return () => {
                 window.removeEventListener('keydown', handleEscClose);
             };
+
         }, [setIsOpen]);
 
         return (
@@ -169,8 +168,13 @@
                                 autoHighlight
                                 value={sectionsGroups.flatMap(group => group.sections).find(section => section.ID === selectedEvent?.SECTION_ID)}
                                 onChange={(event, newValue) => {
-                                    // Здесь логика обновления выбранного события, возможно, вам потребуется дополнительная логика
-                                    // для корректного обновления свойств выбранного события.
+
+                                    setSelectedEvent((prevstate) => {
+                                        if (prevstate && newValue) {
+                                            return {...prevstate, SECTION_ID: newValue.ID, SECT_ID: newValue.ID};
+                                        }
+                                        return prevstate;
+                                    });
                                 }}
                                 getOptionLabel={(option) => `${option.NAME}`}
                                 renderOption={(props, option) => (
@@ -347,36 +351,63 @@
 
                                 />
                             </h3>
-                            <h3>Прикрепленные документы: </h3>
 
-                            <FileUploader />
+
+                            {
+                                !newEvent && <>
+                                    <h3>Прикрепленные документы: </h3>
+                                    <FileUploader />
+                                </>
+                            }
 
                         </div>
-                        <div className={styles.footer}>
-                            <Button variant="contained" color="success" onClick={() => {
-                                updateCalendarEvent(selectedEvent)
-                                    .then(data => setEvents((prevState) => prevState.map((item) => {
-                                        // item.ID === selectedEvent.ID ? return selectedEvent : return item;
-                                        if (item.ID === selectedEvent.ID) {
-                                            return selectedEvent
-                                        } else {
-                                            return item;
-                                        }
-                                    })))
-                                    .catch(error => console.error('Failed to update event', error));
-                                setIsOpen(false);
-                            }}>
-                                Сохранить
-                            </Button>
-                            <Button variant="outlined" color="error" onClick={() => {
-                                deleteCalendarEvent(selectedEvent)
-                                    .then(data => setEvents((prevState) => prevState.filter((item) => item.ID !== selectedEvent.ID)))
-                                    .catch(error => console.error('Failed to update event', error));
-                                setIsOpen(false);
-                            }}>
-                                Удалить
-                            </Button>
-                        </div>
+                        {
+                            newEvent ?
+                                <div className={styles.footer}>
+                                    <Button variant="contained" color="success" onClick={() => {
+                                        addCalendarEvent(selectedEvent)
+                                            .then(data => {
+                                                setEvents((prevState) => [...prevState, selectedEvent]);
+                                            })
+                                            .catch(error => console.error('Failed to update event', error));
+                                        setIsOpen(false);
+                                    }}>
+                                        Создать
+                                    </Button>
+
+                                    <Button variant="outlined" color="error" onClick={() => {
+                                        setIsOpen(false);
+                                    }}>
+                                        Отменить
+                                    </Button>
+                                </div>
+                                :
+                                <div className={styles.footer}>
+                                    <Button variant="contained" color="success" onClick={() => {
+                                        updateCalendarEvent(selectedEvent)
+                                            .then(data => setEvents((prevState) => prevState.map((item) => {
+                                                if (item.ID === selectedEvent.ID) {
+                                                    return selectedEvent
+                                                } else {
+                                                    return item;
+                                                }
+                                            })))
+                                            .catch(error => console.error('Failed to update event', error));
+                                        setIsOpen(false);
+                                    }}>
+                                        Обновить
+                                    </Button>
+
+                                    <Button variant="outlined" color="error" onClick={() => {
+                                        deleteCalendarEvent(selectedEvent)
+                                            .then(data => setEvents((prevState) => prevState.filter((item) => item.ID !== selectedEvent.ID)))
+                                            .catch(error => console.error('Failed to update event', error));
+                                        setIsOpen(false);
+                                    }}>
+                                        Удалить
+                                    </Button>
+                                </div>
+                        }
                     </>
                 )}
             </div>
