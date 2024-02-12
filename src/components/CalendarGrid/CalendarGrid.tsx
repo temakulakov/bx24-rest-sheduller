@@ -136,11 +136,11 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                                             value={formulas ? (formulas.find(formula => formula.ID === section.ID)?.NUMBER || 0) / 5.4
                                                 : 0} color={section.COLOR}
                                             height={currentSection && currentSection.ID === section.ID ? 15 : 10}/>
-                                        <p style={{fontSize: "14px"}}>{formulas ? Math.floor((formulas.find(formula => formula.ID === section.ID)?.NUMBER || 0) / 5.4)
-                                            : 0}%</p>
+
                                     </div>
                                     <div className={styles.secondColumn}>
-                                        <p>Всего: 540 мин</p>
+                                        <p style={{fontSize: "14px"}}>{formulas ? Math.floor((formulas.find(formula => formula.ID === section.ID)?.NUMBER || 0) / 5.4)
+                                            : 0}%</p>
                                         <p>Занято: {formulas ? Math.floor((formulas.find(formula => formula.ID === section.ID)?.NUMBER || 0))
                                             : 0} мин</p>
                                     </div>
@@ -255,7 +255,7 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                                 return group ? group.title : null;
                             }).filter(name => name !== null)[0] // Извлекаем первое непустое имя и отображаем его
                         }</div>
-                        <div style={{marginLeft: "5px"}}>
+                        <div style={{paddingLeft: "5px", marginLeft: "5px", borderLeft: "2px #807185 solid"}}>
                             <div/>
                             <a style={{color: "#807186"}}>Место:<br/>
                             </a>{sections.find(section => section.ID === currentEvent.SECTION_ID)?.NAME.replace(/\[.*?\]/g, '')}
