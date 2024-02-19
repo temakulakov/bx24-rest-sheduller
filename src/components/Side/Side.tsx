@@ -5,6 +5,7 @@ import {dateAtom} from "../../store/atoms";
 import {useRecoilState} from "recoil";
 import styles from "../../styles/Side.module.scss";
 import 'dayjs/locale/ru';
+import dayjs from "dayjs";
 
 
 export default function Side() {
@@ -15,6 +16,8 @@ export default function Side() {
                 value={date}
                 onChange={(newValue) => setDate(newValue)}
                 className={styles.root}
+                views={['month', 'day']}
+                referenceDate={dayjs('2024-02-17')}
             />
         </LocalizationProvider>
     );

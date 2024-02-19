@@ -22,6 +22,7 @@
     import {deleteCalendarEvent} from "../../services/bx24-rest-webhooks/deleteEvent";
     import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded';
     import {addCalendarEvent} from "../../services/bx24-rest-webhooks/addEvent";
+    import {Month, WeekDay} from "../../store/consts";
 
     interface SlidePanelProps {
         isOpen: boolean;
@@ -213,6 +214,9 @@
                                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ru"}>
                                     <DateTimePicker
                                         ampm={false}
+                                        views={['month', 'day', 'hours', 'minutes']}
+                                        maxDateTime={selectedEvent.DATE_TO}
+                                        label={`${selectedEvent?.DATE_FROM.date()} ${Month[selectedEvent?.DATE_FROM.month()]} ${selectedEvent?.DATE_FROM.year()} ${WeekDay[selectedEvent?.DATE_FROM.day()]}`}
                                         value={selectedEvent?.DATE_FROM} // Убедитесь, что selectedEvent?.DATE_FROM корректно обрабатывается
                                         onChange={(newValue) => {
                                             setSelectedEvent((prev) => {
@@ -230,7 +234,10 @@
                                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={"ru"}>
                                     <DateTimePicker
                                         ampm={false}
+                                        views={['month', 'day', 'hours', 'minutes']}
+                                        minDateTime={selectedEvent.DATE_FROM}
                                         value={selectedEvent.DATE_TO}
+                                        label={`${selectedEvent?.DATE_FROM.date()} ${Month[selectedEvent?.DATE_FROM.month()]} ${selectedEvent?.DATE_FROM.year()} ${WeekDay[selectedEvent?.DATE_FROM.day()]}`}
                                         onChange={(newValue, context) => {
                                             setSelectedEvent((prev) => {
                                                 if (!prev) return prev;

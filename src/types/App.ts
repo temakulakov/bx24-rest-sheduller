@@ -1,4 +1,4 @@
-import {ISection} from "./Api";
+import {IEvent, ISection} from "./Api";
 import {Dayjs} from "dayjs";
 
 export interface Position {
@@ -17,4 +17,5 @@ export interface IModal {
     status: boolean;
     from: Dayjs;
     to: Dayjs;
+    groups: ISectionsGroup[];
 }

@@ -77,7 +77,9 @@
     }
   }
   label {
-    display: none;
+    //display: none;
+    left: -12px;
+    top: -6px;
   }
 }
 
@@ -131,7 +133,8 @@
     }
   }
   label {
-    display: none;
+    //display: none;
+    color: #807185 !important;
   }
 }
 
@@ -243,7 +246,7 @@ h3 {
       background-color: rgba(183, 6, 6, 0);
     }
   }
-  label {
-    display: none;
-  }
+  //label {
+  //  display: none;
+  //}
 }

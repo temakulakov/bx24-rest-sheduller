@@ -41,7 +41,8 @@ export const modaAtom = atom<IModal>({
     key: 'modal',
     default: {
         status: false,
-        from: dayjs(),
-        to: dayjs()
+        from: dayjs().subtract(1, 'month'),
+        to: dayjs(),
+        groups: []
     }
 });

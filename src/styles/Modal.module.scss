@@ -1,11 +1,39 @@
 .root {
-  height: 80vh;
-  width: 80vw;
-  position: absolute;
-  background-color: white;
-  border-radius: 13px;
-  z-index: 10000;
-  margin: auto;
-    left: 50%;
-    top: 50%;
+
+
+}
+
+.dateTimeRangeRoot {
+  display: flex;
+  > div > div:first-child {
+
+  }
+}
+
+
+.btnGenerate {
+  width: 150px;
+  //margin: 10px 50%;
+  &:hover {
+    box-shadow: 0 0 0 1.5px rgb(255, 255, 255),
+    0 0 0 3px #2F7D31;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    margin-top: 5px;
+  }
+}
+.dateTime {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  > div {
+    display: flex;
+    flex-direction: column;
+  }
 }
