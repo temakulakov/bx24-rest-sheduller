@@ -121,6 +121,26 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
     return (
         <div className={styles.gridContainer} ref={ref}>
             <div className={styles.fixedColumn}>
+                <React.Fragment>
+                    <div
+                        className={styles.titleGroup}
+                    >{"Праздники"}</div>
+                    <div onMouseMove={handleMouseMove}
+                        // onMouseEnter={(e) => handleMouseEnter2(e, section)}
+                        // onMouseLeave={handleMouseLeave2}
+                        // key={index}
+                        // style={currentSection?.ID === section.ID ?
+                        //     {
+                        //         boxShadow: "0 0 0 1px #E1DCE2",
+                        //         backgroundColor: "#DBDADC",
+                        //         height: "45px"
+                        //     }
+                        //     :
+                        //     {}} className={styles.stickyCell}
+                    >
+                    </div>
+
+                </React.Fragment>
                 {
                     sectionsGroups.map((group, index) => (
                         <React.Fragment key={index}>
@@ -171,6 +191,14 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                 }
             </div>
             <div className={styles.scrollableRows}>
+                <div className={styles.titleRow} style={{position: "relative"}}>
+                    {events.map((event, index) => {
+                        if (event.SECTION_ID === "546") {
+                            return <div className={styles.eventWrapper} style={{height: "20px",  left: "310px",width: "400px", background: "#E89B08", boxShadow: ` 0 0 0 0 rgb(255, 255, 255),
+                                                                                                         0 0 0 3px #E89B08`, alignItems: "center", position: "fixed", marginTop: "5px"}}>{event.NAME}</div>
+                        }
+                    })}
+                </div>
                 {sectionsGroups.map((group, index) => {
                         return <React.Fragment key={index}>
                             <div className={styles.titleRow}>
@@ -192,7 +220,7 @@ const CalendarGrid = React.forwardRef<HTMLDivElement, {}>((props, ref) => {
                                                     DATE_FROM: date.hour(12),
                                                     DATE_TO: date.hour(13),
                                                     DESCRIPTION: '',
-                                                    ['~DESCRIPTION']: '',
+                                                    '~DESCRIPTION': '',
                                                     uploads: []
                                                 });
                                                 setNewEvent(true);

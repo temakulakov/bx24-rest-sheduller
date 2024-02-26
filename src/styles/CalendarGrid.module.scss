@@ -27,6 +27,7 @@
   //border-bottom: 1px solid #ccc;
   width: 3300px;
   transition: all .2s ease;
+  position: relative;
   cursor: pointer;
   &:hover {
     box-shadow: 0 0 0 1px #E1DCE2;
@@ -107,8 +108,8 @@
   transition: all .3s ease;
   cursor: pointer;
   overflow: scroll;
-  position: relative;
-  //position: absolute;
+  // position: relative;
+  position: absolute;
   left: 200px;
   z-index: 100;
 
